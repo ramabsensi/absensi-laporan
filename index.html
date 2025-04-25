@@ -60,48 +60,50 @@
     }
 
     function formatDateToYMD(inputDate) {
-  const date = new Date(inputDate);
-  if (isNaN(date)) return ""; // kalau tidak valid, kembalikan string kosong
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
-}
-
+      const date = new Date(inputDate);
+      if (isNaN(date)) return "";
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
 
     function applyFilter() {
-  const start = document.getElementById("startDate").value;
-  const end = document.getElementById("endDate").value;
+      const start = document.getElementById("startDate").value;
+      const end = document.getElementById("endDate").value;
 
-  if (!start || !end) {
-    renderTableFromFullData();
-    return;
-  }
-
-  const filtered = fullData.filter(row => {
-    const rawDate = row[3]; // kolom ke-4 = Tanggal Check In
-    const formatted = formatDateToYMD(rawDate);
-    return formatted >= start && formatted <= end;
-  });
-
-  renderTable(["Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In", "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out", "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"], filtered);
-}
-
+      if (!start || !end) {
+        renderTableFromFullData();
+        return;
+      }
 
       const filtered = fullData.filter(row => {
-        const tgl = row[3]; // kolom ke-4 = Tanggal Check In
-        return tgl >= start && tgl <= end;
+        const rawDate = row[3]; // kolom ke-4 = Tanggal Check In
+        const formatted = formatDateToYMD(rawDate);
+        return formatted >= start && formatted <= end;
       });
 
-      renderTable(["Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In", "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out", "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"], filtered);
+      renderTable([
+        "Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In",
+        "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out",
+        "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"
+      ], filtered);
     }
 
     function renderTableFromFullData() {
-      renderTable(["Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In", "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out", "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"], fullData);
+      renderTable([
+        "Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In",
+        "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out",
+        "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"
+      ], fullData);
     }
 
     function exportExcel() {
-      const ws = XLSX.utils.aoa_to_sheet([["Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In", "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out", "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"], ...fullData]);
+      const ws = XLSX.utils.aoa_to_sheet([[
+        "Kode Unik", "Nama", "Divisi", "Tanggal Check In", "Waktu Check In",
+        "Lokasi Check In", "Tanggal Check Out", "Waktu Check Out", "Lokasi Check Out",
+        "Opsi", "Kosong1", "Kosong2", "Selfie In", "Selfie Out"
+      ], ...fullData]);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Laporan Absensi");
       XLSX.writeFile(wb, "LaporanAbsensi.xlsx");
@@ -112,8 +114,11 @@
       const doc = new jsPDF();
 
       doc.autoTable({
-        head: [["Kode Unik", "Nama", "Divisi", "Tanggal In", "Waktu In", "Lokasi In", "Tanggal Out", "Waktu Out", "Lokasi Out", "Opsi"]],
-        body: fullData.map(r => r.slice(0, 10)), // ambil 10 kolom pertama untuk PDF agar muat
+        head: [[
+          "Kode Unik", "Nama", "Divisi", "Tanggal In", "Waktu In",
+          "Lokasi In", "Tanggal Out", "Waktu Out", "Lokasi Out", "Opsi"
+        ]],
+        body: fullData.map(r => r.slice(0, 10)),
         styles: { fontSize: 8 }
       });
 
